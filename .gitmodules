@@ -1,0 +1,3 @@
+[submodule "vendor/imitation"]
+	path = vendor/imitation
+	url = https://github.com/HumanCompatibleAI/imitation

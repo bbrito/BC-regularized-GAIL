@@ -3,18 +3,19 @@ import glob
 import os
 import time
 from collections import deque
-
+import imitating_games
 import gym
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+from imitation.util import util
 
 from a2c_ppo_acktr import algo, utils
 from a2c_ppo_acktr.algo import gail
 from a2c_ppo_acktr.arguments import get_args
-from a2c_ppo_acktr.envs import make_vec_envs
+from a2c_ppo_acktr.envs import make_vec_envs, VecPyTorch, VecNormalize
 from a2c_ppo_acktr.model import Policy
 from a2c_ppo_acktr.storage import RolloutStorage
 from evaluation import evaluate
@@ -208,8 +209,20 @@ def main():
     torch.set_num_threads(1)
     device = torch.device("cuda:0" if args.cuda else "cpu")
 
-    envs = make_vec_envs(args.env_name, args.seed, args.num_processes,
-                         args.gamma, log_dir, device, False)
+    #envs = make_vec_envs(args.env_name, args.seed, args.num_processes,
+    #                     args.gamma, log_dir, device, False)
+
+    game = imitating_games.GuidanceFeedbackGame()
+
+    envs = util.make_vec_env("FeedbackGame-v0", n_envs=1)
+
+    envs = VecNormalize(envs, ob=True, gamma=args.gamma)
+
+    envs = VecPyTorch(envs, device)
+
+    envs.num_envs = 1
+    expert_policy = imitating_games.GameSolverExpertPolicy(envs.envs[0].env.env)
+
     obs_shape = len(envs.observation_space.shape)
 
     # Take activation for carracing
@@ -291,6 +304,7 @@ def main():
 
             expert_dataset = gail.ExpertDataset(
                 file_name, num_trajectories=args.num_traj, subsample_frequency=1)
+
             args.gail_batch_size = min(args.gail_batch_size, len(expert_dataset))
             drop_last = len(expert_dataset) > args.gail_batch_size
             gail_train_loader = torch.utils.data.DataLoader(

@@ -4,7 +4,8 @@ __pycache__/
 *$py.class
 *txt
 *pt
-
+*h5
+vendor/
 # C extensions
 *.so
 

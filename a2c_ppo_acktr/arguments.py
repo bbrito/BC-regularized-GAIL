@@ -137,13 +137,13 @@ def get_args():
         help='environment to train on (default: PongNoFrameskip-v4)')
     parser.add_argument(
         '--log-dir',
-        default='/serverdata/rohit/BCGAIL/logs/',
+        default='/home/bdebrito/code/BC-regularized-GAIL/logs/',
         help='directory to save agent logs (default: /tmp/gym)')
     parser.add_argument('--model_name', type=str, required=True)
     parser.add_argument('--load_model_name', type=str, default=None)
     parser.add_argument(
         '--save-dir',
-        default='/serverdata/rohit/BCGAIL/',
+        default='/home/bdebrito/code/BC-regularized-GAIL/logs/',
         help='directory to save agent logs (default: ./trained_models/)')
     parser.add_argument('--bcgail', type=int, default=0)
     parser.add_argument('--decay', type=float, default=None)

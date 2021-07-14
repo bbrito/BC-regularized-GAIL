@@ -416,6 +416,7 @@ class ExpertImageDataset(torch.utils.data.Dataset):
 
 class ExpertDataset(torch.utils.data.Dataset):
     def __init__(self, file_name, num_trajectories=4, subsample_frequency=20, train=True, start=0):
+        #file_name = "/home/bdebrito/code/BC-regularized-GAIL/gail_experts/trajs_halfcheetah.pt"
         all_trajectories = torch.load(file_name)
 
         perm = torch.randperm(all_trajectories['states'].size(0))
